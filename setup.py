@@ -4,7 +4,7 @@ setup(
     name="tmat-gis-mockapi",
     version="1.0.0",
     description="Mock API for TMAT GIS monitoring system",
-    author="Pak Hamka",
+    author="aindrajaya",
     packages=find_packages(),
     python_requires=">=3.11",
     install_requires=[
