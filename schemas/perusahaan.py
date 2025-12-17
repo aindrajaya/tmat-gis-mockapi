@@ -1,5 +1,6 @@
-from datetime import datetime
+from typing import List
 from pydantic import BaseModel
+from .device import DeviceResponse
 
 class PerusahaanResponse(BaseModel):
     """Company response schema"""
@@ -13,6 +14,14 @@ class PerusahaanResponse(BaseModel):
     created_at: str  # Stored as string from JSON
     kode_perusahaan: str
     jenis_perusahaan: str
+    
+    class Config:
+        from_attributes = True
+
+class PerusahaanWithDevicesResponse(BaseModel):
+    """Company with attached device list"""
+    perusahaan: PerusahaanResponse
+    devices: List[DeviceResponse]
     
     class Config:
         from_attributes = True

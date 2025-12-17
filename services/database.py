@@ -60,6 +60,28 @@ def get_devices_by_perusahaan(id_perusahaan: int) -> List[Dict]:
     devices = get_all_devices()
     return [d for d in devices if d["id_perusahaan"] == id_perusahaan]
 
+def get_perusahaan_with_devices(id_perusahaan: int) -> Optional[Dict]:
+    """Get company detail with its devices"""
+    perusahaan = get_perusahaan_by_id(id_perusahaan)
+    if perusahaan is None:
+        return None
+    
+    devices = get_devices_by_perusahaan(id_perusahaan)
+    return {
+        "perusahaan": perusahaan,
+        "devices": devices
+    }
+
+def get_all_perusahaan_with_devices() -> List[Dict]:
+    """Get all companies with their devices"""
+    return [
+        {
+            "perusahaan": perusahaan,
+            "devices": get_devices_by_perusahaan(perusahaan["id"])
+        }
+        for perusahaan in get_all_perusahaan()
+    ]
+
 # Realtime data queries
 def get_all_realtime() -> List[Dict]:
     """Get all realtime measurements"""
