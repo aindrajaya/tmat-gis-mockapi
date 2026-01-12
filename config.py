@@ -16,7 +16,8 @@ class Settings:
         "http://localhost:3000",
         "http://localhost:5173",
         "http://127.0.0.1:3000",
-        "http://27.50.21.155:9001"
+        "http://27.50.21.155:9001",
+        "*"  # Allow all origins (for development/testing)
     ]
 
 settings = Settings()
