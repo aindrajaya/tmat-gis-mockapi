@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from config import settings
 from services import database
-from routers import perusahaan, device, realtime
+from routers import perusahaan, device, realtime, site
 
 # Startup event
 @asynccontextmanager
@@ -37,6 +39,7 @@ app.add_middleware(
 app.include_router(perusahaan.router, prefix=settings.API_PREFIX)
 app.include_router(device.router, prefix=settings.API_PREFIX)
 app.include_router(realtime.router, prefix=settings.API_PREFIX)
+app.include_router(site.router, prefix=settings.API_PREFIX)
 
 # Health check endpoint
 @app.get("/health")
@@ -53,8 +56,12 @@ async def root():
     return {
         "message": "API Monitoring TMAT - Portal V1",
         "docs": "/docs",
-        "health": "/health"
+        "health": "/health",
+        "test_filter": "/test_filter.html"
     }
+
+# Mount static files
+app.mount("/test", StaticFiles(directory=str(Path(__file__).parent)), name="test")
 
 if __name__ == "__main__":
     import uvicorn

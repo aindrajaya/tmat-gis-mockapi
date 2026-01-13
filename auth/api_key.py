@@ -1,15 +1,24 @@
-from fastapi import Header, HTTPException, status
+from fastapi import Header, HTTPException, Query, status
 from typing import Optional
 
-async def verify_api_key(x_api_key: Optional[str] = Header(None)) -> str:
+async def verify_api_key(
+    x_api_key: Optional[str] = Header(None),
+    api_key: Optional[str] = Query(None)
+) -> str:
     """
-    Verify API key from X-API-KEY header
+    Verify API key from either:
+    1. X-API-KEY header (recommended for secure requests)
+    2. api_key query parameter (for testing/simple requests)
+    
     For demo: allows any non-empty key
     """
-    if not x_api_key or x_api_key.strip() == "":
+    # Priority: Header > Query Parameter
+    key = x_api_key or api_key
+    
+    if not key or key.strip() == "":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="X-API-KEY header is missing or empty"
+            detail="API key is missing. Provide via X-API-KEY header or api_key query parameter"
         )
     
-    return x_api_key
+    return key

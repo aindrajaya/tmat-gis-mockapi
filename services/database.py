@@ -15,7 +15,7 @@ def load_database() -> Dict[str, Any]:
     
     db_path = Path(__file__).parent.parent / "populate_db.json"
     
-    with open(db_path, 'r') as f:
+    with open(db_path, 'r', encoding='utf-8') as f:
         _db_cache = json.load(f)
     
     return _db_cache
@@ -128,3 +128,127 @@ def get_realtime_by_device(
     paginated = filtered[offset:offset + limit]
     
     return paginated, total_count
+
+
+# Site queries
+def get_all_sites() -> List[Dict]:
+    """Get all sites"""
+    db = get_database()
+    return db.get("master_site", [])
+
+
+def get_sites_by_kecamatan(id_kecamatan: int) -> List[Dict]:
+    """Get all sites for a kecamatan/district"""
+    sites = get_all_sites()
+    return [s for s in sites if s["id_kecamatan"] == id_kecamatan]
+
+
+def get_sites_by_kelurahan(id_kelurahan: int) -> List[Dict]:
+    """Get all sites for a kelurahan/village"""
+    sites = get_all_sites()
+    return [s for s in sites if s["id_kelurahan"] == id_kelurahan]
+
+
+# Location hierarchy queries
+def get_all_provinsi() -> List[Dict]:
+    """Get all provinces"""
+    db = get_database()
+    return db.get("master_provinsi", [])
+
+
+def get_all_kabupaten() -> List[Dict]:
+    """Get all regencies/kabupaten"""
+    db = get_database()
+    return db.get("master_kabupaten", [])
+
+
+def get_all_kecamatan() -> List[Dict]:
+    """Get all districts/kecamatan"""
+    db = get_database()
+    return db.get("master_kecamatan", [])
+
+
+def get_all_kelurahan() -> List[Dict]:
+    """Get all villages/kelurahan"""
+    db = get_database()
+    return db.get("master_kelurahan", [])
+
+
+def get_kecamatan_by_kabupaten(id_kabupaten: int) -> List[Dict]:
+    """Get all kecamatan for a kabupaten"""
+    kecamatan = get_all_kecamatan()
+    return [k for k in kecamatan if k["id_kabupaten"] == id_kabupaten]
+
+
+def get_kelurahan_by_kecamatan(id_kecamatan: int) -> List[Dict]:
+    """Get all kelurahan for a kecamatan"""
+    kelurahan = get_all_kelurahan()
+    return [v for v in kelurahan if v["id_kecamatan"] == id_kecamatan]
+
+
+def get_devices_by_kecamatan(id_kecamatan: int) -> List[Dict]:
+    """Get all devices for a kecamatan (via sites)"""
+    sites = get_sites_by_kecamatan(id_kecamatan)
+    devices = get_all_devices()
+    site_ids = {s["id"] for s in sites}
+    return [d for d in devices if d["id_site"] in site_ids]
+
+
+def get_devices_by_kelurahan(id_kelurahan: int) -> List[Dict]:
+    """Get all devices for a kelurahan (via sites)"""
+    sites = get_sites_by_kelurahan(id_kelurahan)
+    devices = get_all_devices()
+    site_ids = {s["id"] for s in sites}
+    return [d for d in devices if d["id_site"] in site_ids]
+
+
+def get_realtime_by_kecamatan(id_kecamatan: int) -> List[Dict]:
+    """Get realtime data for all devices in a kecamatan"""
+    devices = get_devices_by_kecamatan(id_kecamatan)
+    realtime = get_all_realtime()
+    device_ids = {d["device_id_unik"] for d in devices}
+    return [r for r in realtime if r["device_id_unik"] in device_ids]
+
+
+def get_realtime_by_kelurahan(id_kelurahan: int) -> List[Dict]:
+    """Get realtime data for all devices in a kelurahan"""
+    devices = get_devices_by_kelurahan(id_kelurahan)
+    realtime = get_all_realtime()
+    device_ids = {d["device_id_unik"] for d in devices}
+    return [r for r in realtime if r["device_id_unik"] in device_ids]
+
+
+def get_devices_by_kabupaten(id_kabupaten: int) -> List[Dict]:
+    """Get all devices for a kabupaten/regency (via sites)"""
+    sites = get_all_sites()
+    devices = get_all_devices()
+    # Filter sites by kabupaten
+    filtered_sites = [s for s in sites if s["id_kabupaten"] == id_kabupaten]
+    site_ids = {s["id"] for s in filtered_sites}
+    return [d for d in devices if d["id_site"] in site_ids]
+
+
+def get_devices_by_provinsi(id_provinsi: int) -> List[Dict]:
+    """Get all devices for a provinsi/province (via sites)"""
+    sites = get_all_sites()
+    devices = get_all_devices()
+    # Filter sites by provinsi
+    filtered_sites = [s for s in sites if s["id_provinsi"] == id_provinsi]
+    site_ids = {s["id"] for s in filtered_sites}
+    return [d for d in devices if d["id_site"] in site_ids]
+
+
+def get_realtime_by_kabupaten(id_kabupaten: int) -> List[Dict]:
+    """Get realtime data for all devices in a kabupaten"""
+    devices = get_devices_by_kabupaten(id_kabupaten)
+    realtime = get_all_realtime()
+    device_ids = {d["device_id_unik"] for d in devices}
+    return [r for r in realtime if r["device_id_unik"] in device_ids]
+
+
+def get_realtime_by_provinsi(id_provinsi: int) -> List[Dict]:
+    """Get realtime data for all devices in a provinsi"""
+    devices = get_devices_by_provinsi(id_provinsi)
+    realtime = get_all_realtime()
+    device_ids = {d["device_id_unik"] for d in devices}
+    return [r for r in realtime if r["device_id_unik"] in device_ids]
