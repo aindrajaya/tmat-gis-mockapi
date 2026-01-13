@@ -30,6 +30,22 @@
               ],
               "title": "Id"
             }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
           }
         ],
         "responses": {
@@ -57,12 +73,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/portal_v1/perusahaan/devices": {
@@ -88,6 +99,22 @@
                 }
               ],
               "title": "Id"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
             }
           }
         ],
@@ -116,12 +143,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/portal_v1/device": {
@@ -130,7 +152,7 @@
           "Device"
         ],
         "summary": "Get Device",
-        "description": "Get device(s)\n- If device_id is provided, return specific device\n- Otherwise, return all devices",
+        "description": "Get device(s) with optional filtering\n\nParameters:\n- device_id: Filter by specific device ID\n- id_kecamatan: Filter by kecamatan/district\n- id_kelurahan: Filter by kelurahan/village\n- id_perusahaan: Filter by company\n\nPriority: device_id > id_kelurahan > id_kecamatan > id_perusahaan > all devices",
         "operationId": "get_device_api_portal_v1_device_get",
         "parameters": [
           {
@@ -146,7 +168,79 @@
                   "type": "null"
                 }
               ],
+              "description": "Filter by device ID",
               "title": "Device Id"
+            },
+            "description": "Filter by device ID"
+          },
+          {
+            "name": "id_kecamatan",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by kecamatan/district ID",
+              "title": "Id Kecamatan"
+            },
+            "description": "Filter by kecamatan/district ID"
+          },
+          {
+            "name": "id_kelurahan",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by kelurahan/village ID",
+              "title": "Id Kelurahan"
+            },
+            "description": "Filter by kelurahan/village ID"
+          },
+          {
+            "name": "id_perusahaan",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by company ID",
+              "title": "Id Perusahaan"
+            },
+            "description": "Filter by company ID"
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
             }
           }
         ],
@@ -175,12 +269,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/portal_v1/realtime_all": {
@@ -206,6 +295,22 @@
                 }
               ],
               "title": "Id Perusahaan"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
             }
           }
         ],
@@ -234,12 +339,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ]
+        }
       }
     },
     "/api/portal_v1/realtime_device": {
@@ -310,6 +410,22 @@
               "title": "Offset"
             },
             "description": "Pagination offset"
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
           }
         ],
         "responses": {
@@ -333,12 +449,385 @@
               }
             }
           }
-        },
-        "security": [
+        }
+      }
+    },
+    "/api/portal_v1/site": {
+      "get": {
+        "tags": [
+          "site"
+        ],
+        "summary": "Get Site",
+        "description": "Get sites with optional filtering by location or company.\n\nParameters:\n- id_kecamatan: Filter sites by kecamatan/district ID\n- id_kelurahan: Filter sites by kelurahan/village ID\n- id_perusahaan: Filter sites by company ID",
+        "operationId": "get_site_api_portal_v1_site_get",
+        "parameters": [
           {
-            "ApiKeyAuth": []
+            "name": "id_kecamatan",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by kecamatan/district ID",
+              "title": "Id Kecamatan"
+            },
+            "description": "Filter by kecamatan/district ID"
+          },
+          {
+            "name": "id_kelurahan",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by kelurahan/village ID",
+              "title": "Id Kelurahan"
+            },
+            "description": "Filter by kelurahan/village ID"
+          },
+          {
+            "name": "id_perusahaan",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by company ID",
+              "title": "Id Perusahaan"
+            },
+            "description": "Filter by company ID"
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SiteResponse"
+                  },
+                  "title": "Response Get Site Api Portal V1 Site Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/portal_v1/site/kecamatan": {
+      "get": {
+        "tags": [
+          "site"
+        ],
+        "summary": "Get Kecamatan",
+        "description": "Get all kecamatan (districts) or filter by kabupaten.\n\nParameters:\n- id_kabupaten: Filter kecamatan by parent kabupaten/regency ID",
+        "operationId": "get_kecamatan_api_portal_v1_site_kecamatan_get",
+        "parameters": [
+          {
+            "name": "id_kabupaten",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by kabupaten/regency ID",
+              "title": "Id Kabupaten"
+            },
+            "description": "Filter by kabupaten/regency ID"
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/KecamatanResponse"
+                  },
+                  "title": "Response Get Kecamatan Api Portal V1 Site Kecamatan Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/portal_v1/site/kelurahan": {
+      "get": {
+        "tags": [
+          "site"
+        ],
+        "summary": "Get Kelurahan",
+        "description": "Get all kelurahan (villages) or filter by kecamatan.\n\nParameters:\n- id_kecamatan: Filter kelurahan by parent kecamatan/district ID",
+        "operationId": "get_kelurahan_api_portal_v1_site_kelurahan_get",
+        "parameters": [
+          {
+            "name": "id_kecamatan",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by kecamatan/district ID",
+              "title": "Id Kecamatan"
+            },
+            "description": "Filter by kecamatan/district ID"
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/KelurahanResponse"
+                  },
+                  "title": "Response Get Kelurahan Api Portal V1 Site Kelurahan Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/portal_v1/site/kabupaten": {
+      "get": {
+        "tags": [
+          "site"
+        ],
+        "summary": "Get Kabupaten",
+        "description": "Get all kabupaten (regencies) or filter by provinsi.\n\nParameters:\n- id_provinsi: Filter kabupaten by parent provinsi/province ID",
+        "operationId": "get_kabupaten_api_portal_v1_site_kabupaten_get",
+        "parameters": [
+          {
+            "name": "id_provinsi",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by provinsi/province ID",
+              "title": "Id Provinsi"
+            },
+            "description": "Filter by provinsi/province ID"
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/KabupatenResponse"
+                  },
+                  "title": "Response Get Kabupaten Api Portal V1 Site Kabupaten Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/portal_v1/site/provinsi": {
+      "get": {
+        "tags": [
+          "site"
+        ],
+        "summary": "Get Provinsi",
+        "description": "Get all provinces (provinsi)",
+        "operationId": "get_provinsi_api_portal_v1_site_provinsi_get",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProvinsiResponse"
+                  },
+                  "title": "Response Get Provinsi Api Portal V1 Site Provinsi Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/health": {
@@ -486,6 +975,93 @@
         "type": "object",
         "title": "HTTPValidationError"
       },
+      "KabupatenResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "id_kabupaten": {
+            "type": "integer",
+            "title": "Id Kabupaten"
+          },
+          "id_provinsi": {
+            "type": "integer",
+            "title": "Id Provinsi"
+          },
+          "nama_kabupaten": {
+            "type": "string",
+            "title": "Nama Kabupaten"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "id_kabupaten",
+          "id_provinsi",
+          "nama_kabupaten"
+        ],
+        "title": "KabupatenResponse",
+        "description": "Schema for regency/kabupaten response"
+      },
+      "KecamatanResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "id_kecamatan": {
+            "type": "integer",
+            "title": "Id Kecamatan"
+          },
+          "id_kabupaten": {
+            "type": "integer",
+            "title": "Id Kabupaten"
+          },
+          "nama_kecamatan": {
+            "type": "string",
+            "title": "Nama Kecamatan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "id_kecamatan",
+          "id_kabupaten",
+          "nama_kecamatan"
+        ],
+        "title": "KecamatanResponse",
+        "description": "Schema for district/kecamatan response"
+      },
+      "KelurahanResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "id_kelurahan": {
+            "type": "integer",
+            "title": "Id Kelurahan"
+          },
+          "id_kecamatan": {
+            "type": "integer",
+            "title": "Id Kecamatan"
+          },
+          "nama_kelurahan": {
+            "type": "string",
+            "title": "Nama Kelurahan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "id_kelurahan",
+          "id_kecamatan",
+          "nama_kelurahan"
+        ],
+        "title": "KelurahanResponse",
+        "description": "Schema for village/kelurahan response"
+      },
       "PerusahaanResponse": {
         "properties": {
           "id": {
@@ -565,6 +1141,30 @@
         ],
         "title": "PerusahaanWithDevicesResponse",
         "description": "Company with attached device list"
+      },
+      "ProvinsiResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "id_provinsi": {
+            "type": "integer",
+            "title": "Id Provinsi"
+          },
+          "nama_provinsi": {
+            "type": "string",
+            "title": "Nama Provinsi"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "id_provinsi",
+          "nama_provinsi"
+        ],
+        "title": "ProvinsiResponse",
+        "description": "Schema for province/provinsi response"
       },
       "RealtimeDataResponse": {
         "properties": {
@@ -648,6 +1248,76 @@
         "title": "RealtimeDeviceResponse",
         "description": "Paginated realtime device data response"
       },
+      "SiteResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "id_perusahaan": {
+            "type": "integer",
+            "title": "Id Perusahaan"
+          },
+          "nama_site": {
+            "type": "string",
+            "title": "Nama Site"
+          },
+          "id_provinsi": {
+            "type": "integer",
+            "title": "Id Provinsi"
+          },
+          "id_kabupaten": {
+            "type": "integer",
+            "title": "Id Kabupaten"
+          },
+          "id_kecamatan": {
+            "type": "integer",
+            "title": "Id Kecamatan"
+          },
+          "id_kelurahan": {
+            "type": "integer",
+            "title": "Id Kelurahan"
+          },
+          "latitude": {
+            "type": "number",
+            "title": "Latitude"
+          },
+          "longitude": {
+            "type": "number",
+            "title": "Longitude"
+          },
+          "keterangan": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Keterangan"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "id_perusahaan",
+          "nama_site",
+          "id_provinsi",
+          "id_kabupaten",
+          "id_kecamatan",
+          "id_kelurahan",
+          "latitude",
+          "longitude",
+          "created_at"
+        ],
+        "title": "SiteResponse",
+        "description": "Schema for master_site response"
+      },
       "ValidationError": {
         "properties": {
           "loc": {
@@ -681,19 +1351,6 @@
         ],
         "title": "ValidationError"
       }
-    },
-    "securitySchemes": {
-      "ApiKeyAuth": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "X-API-KEY"
-      }
     }
-  },
-  "servers": [
-    {
-      "url": "http://localhost:8000",
-      "description": "Local dev"
-    }
-  ]
+  }
 }
